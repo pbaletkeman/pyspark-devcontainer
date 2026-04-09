@@ -43,5 +43,5 @@ RUN python -m pip install --no-cache-dir \
     pytest-cov
 
 ENV PYTHONUNBUFFERED=1
-WORKDIR /home/jovyan/code
+WORKDIR /home/jovyan/pyspark-dev-container
 USER jovyan
