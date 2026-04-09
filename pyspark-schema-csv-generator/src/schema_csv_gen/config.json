@@ -1,0 +1,14 @@
+{
+  "default_rows": 100,
+  "default_null_percentage": 10,
+  "nullable_field_overrides": [],
+  "seed": null,
+  "categories": {
+    "department": ["HR", "IT", "Finance", "Sales"],
+    "status": ["Active", "Inactive"]
+  },
+  "integer_range": [-1000, 1000],
+  "float_range": [-1000.0, 1000.0],
+  "date_range": ["2024-04-09", "2027-04-09"],
+  "timestamp_range": ["2024-04-09T00:00:00", "2027-04-09T23:59:59"]
+}
