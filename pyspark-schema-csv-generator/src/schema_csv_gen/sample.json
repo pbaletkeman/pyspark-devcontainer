@@ -1,0 +1,16 @@
+{
+	"fields": [
+		{
+			"name": "id",
+			"type": "AutoIncrementType",
+			"nullable": false,
+			"start": 1
+		},
+		{
+			"name": "id",
+			"type": "AutoIncrementType",
+			"nullable": false,
+			"start": 1
+		}
+	]
+}
