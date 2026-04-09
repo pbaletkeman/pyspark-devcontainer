@@ -1,1 +1,2 @@
-pyjson5 2.0.0
+Faker>=40.13.0
+pyjson5>=2.0.0
