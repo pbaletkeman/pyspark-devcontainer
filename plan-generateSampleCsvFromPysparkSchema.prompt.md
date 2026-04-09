@@ -18,12 +18,14 @@ You want a tool/script that:
 6. No support for nested structures (flat schemas only)
 
 ### Supported Data Types
-- **StringType**: Realistic data via Faker library (names, addresses, text)
-- **IntegerType**: Random integers between -1000 and 1000 (configurable range via CLI or config file)
-- **FloatType/DoubleType**: Random floats between -1000.00 and 1000.00 with 2 decimal places (configurable range via CLI or config file)
-- **BooleanType**: Random true/false values
-- **DateType**: Random dates between 2 years ago and 1 year from now (format: YYYY-MM-DD) (configurable range via CLI or config file)
-- **TimestampType**: Random timestamps in same range (format: ISO 8601) (configurable range via CLI or config file)
+ - **StringType**: Realistic data via https://pypi.org/project/Faker/ (names, addresses, text)
+ - **IntegerType**: Random integers between -1000 and 1000 (configurable range via CLI or config file)
+ - **FloatType/DoubleType**: Random floats between -1000.00 and 1000.00 with 2 decimal places (configurable range via CLI or config file)
+ - **BooleanType**: Random true/false values
+ - **DateType**: Random dates between 2 years ago and 1 year from now (format: YYYY-MM-DD) (configurable range via CLI or config file)
+ - **TimestampType**: Random timestamps in same range (format: ISO 8601) (configurable range via CLI or config file)
+ - **UUIDType**: Random UUIDs (v4) generated for each row
+ - **AutoIncrementType**: Integer sequence starting from a configurable value (default: 1, can be set per field in schema or via CLI/config)
 
 ### Schema File Formats
 
@@ -31,7 +33,8 @@ You want a tool/script that:
 ```json
 {
   "fields": [
-    {"name": "id", "type": "IntegerType", "nullable": false},
+    {"name": "id", "type": "AutoIncrementType", "nullable": false, "start": 1},
+    {"name": "uuid", "type": "UUIDType", "nullable": false},
     {"name": "name", "type": "StringType", "nullable": false},
     {"name": "email", "type": "StringType", "nullable": true},
     {"name": "salary", "type": "FloatType", "nullable": true},
@@ -43,7 +46,8 @@ You want a tool/script that:
 
 **Text Format (DSL-style)**
 ```
-id IntegerType NOT NULL
+id AutoIncrementType NOT NULL START 1
+uuid UUIDType NOT NULL
 name StringType NOT NULL
 email StringType NULLABLE
 salary FloatType NULLABLE
@@ -82,6 +86,7 @@ is_active BooleanType NOT NULL
 --null-percentage N    (optional) Percentage of null values (0-100, default: 10)
 --config FILE          (optional) Path to config file for defaults
 --non-nullable-fields F1,F2,F3  (optional) Force fields to never be null
+--autoinc-start FIELD,VALUE    (optional) Set start value for AutoIncrementType fields, e.g. --autoinc-start id,1000
 --seed N               (optional) Random seed for reproducible output
 --help                 (optional) Display usage instructions
 ```
