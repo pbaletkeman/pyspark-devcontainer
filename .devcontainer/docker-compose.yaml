@@ -1,0 +1,21 @@
+services:
+  spark:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ..:/home/jovyan/pyspark-dev-container
+    ports:
+      - "8888:8888"
+    command: /bin/bash -c "while sleep 1000; do :; done"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - JUPYTER_ENABLE_LAB=1
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 8G
+        reservations:
+          cpus: '2.0'
+          memory: 4G

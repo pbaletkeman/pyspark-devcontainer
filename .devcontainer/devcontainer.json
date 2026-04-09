@@ -1,0 +1,49 @@
+{
+	"name": "PySpark local cluster",
+	"dockerComposeFile": ["./docker-compose.yaml"],
+    "service": "spark",
+    "workspaceFolder": "/home/jovyan/pyspark-dev-container",
+    "remoteUser": "jovyan",
+    "waitFor": "onCreateCommand",
+    "forwardPorts": [8888],
+    "portsAttributes": {
+        "8888": {
+            "label": "Jupyter",
+            "onAutoForward": "openBrowser"
+        }
+    },
+    "files": {
+        "fileExtensions": [".py", ".scala", ".java"]
+    },
+
+    "customizations": {
+        "vscode" : {
+            "settings": {
+                "terminal.integrated.profiles.linux": {
+                    "bash": {
+                        "path": "/bin/bash"
+                    }
+                },
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "python.defaultInterpreterPath": "/usr/bin/python3",
+                "python.linting.enabled": true,
+                "python.linting.pylintEnabled": true,
+                "[python]": {
+                    "editor.formatOnSave": true,
+                    "editor.defaultFormatter": "ms-python.python"
+                }
+            },
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+	        "ms-toolsai.jupyter",
+                "ms-toolsai.jupyter-renderers",
+                "redhat.vscode-yaml",
+                "ms-vscode.makefile-tools"
+            ]
+        }
+    },
+
+    "postCreateCommand": "python -m pip install --upgrade pip && pip install -r /home/jovyan/pyspark-dev-container/requirements.txt 2>/dev/null || true",
+    "remoteEnv": {
+        "PYTHONUNBUFFERED": "1"
