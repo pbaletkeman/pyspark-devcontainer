@@ -62,7 +62,11 @@ is_active BooleanType NOT NULL
   "categories": {
     "department": ["HR", "IT", "Finance", "Sales"],
     "status": ["Active", "Inactive"]
-  }
+  },
+  "integer_range": [-1000, 1000],
+  "float_range": [-1000.0, 1000.0],
+  "date_range": ["2024-04-09", "2027-04-09"],
+  "timestamp_range": ["2024-04-09T00:00:00", "2027-04-09T23:59:59"]
 }
 ```
 
@@ -70,6 +74,10 @@ is_active BooleanType NOT NULL
 ```
 --schema FILE          (required) Path to schema file (JSON or text)
 --output FILE          (required) Output CSV file path
+--integer-range MIN,MAX        (optional) Integer range, e.g. --integer-range -1000,1000 (default: -1000,1000)
+--float-range MIN,MAX          (optional) Float range, e.g. --float-range -1000.0,1000.0 (default: -1000.0,1000.0)
+--date-range START,END         (optional) Date range, e.g. --date-range 2024-04-09,2027-04-09 (default: 2 years ago to 1 year from now)
+--timestamp-range START,END    (optional) Timestamp range, e.g. --timestamp-range 2024-04-09T00:00:00,2027-04-09T23:59:59 (default: 2 years ago to 1 year from now)
 --rows N               (optional) Number of rows to generate (default: 100)
 --null-percentage N    (optional) Percentage of null values (0-100, default: 10)
 --config FILE          (optional) Path to config file for defaults
