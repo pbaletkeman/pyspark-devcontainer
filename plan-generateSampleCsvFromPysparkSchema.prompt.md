@@ -19,11 +19,11 @@ You want a tool/script that:
 
 ### Supported Data Types
 - **StringType**: Realistic data via Faker library (names, addresses, text)
-- **IntegerType**: Random integers between 0-100
-- **FloatType/DoubleType**: Random floats between 0-100 with 2 decimal places
+- **IntegerType**: Random integers between -1000 and 1000 (configurable range via CLI or config file)
+- **FloatType/DoubleType**: Random floats between -1000.00 and 1000.00 with 2 decimal places (configurable range via CLI or config file)
 - **BooleanType**: Random true/false values
-- **DateType**: Random dates between 2 years ago and 1 year from now (format: YYYY-MM-DD)
-- **TimestampType**: Random timestamps in same range (format: ISO 8601)
+- **DateType**: Random dates between 2 years ago and 1 year from now (format: YYYY-MM-DD) (configurable range via CLI or config file)
+- **TimestampType**: Random timestamps in same range (format: ISO 8601) (configurable range via CLI or config file)
 
 ### Schema File Formats
 
