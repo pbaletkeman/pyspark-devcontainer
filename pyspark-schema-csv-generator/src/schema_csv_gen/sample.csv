@@ -1,8 +1,11 @@
-name,type,nullable,start,length,values,min,max,hint
-id,AutoIncrementType,false,1,10,"value 1|value 2",10,20,hint
-firstname,stringtype,false,1,50,"value 1|value 2",20,30,hint
-firstname,randomtexttype,false,1,100,"value 1|value 2",20,30,hint
-firstname,integertype,false,1,0,"value 1|value 2",2000,9930,hint
-firstname,doubletype,false,1,100,"value 1|value 2",20,30,hint
-firstname,floattype,false,1,100,"value 1|value 2",20,30,hint
-firstname,booleantype,false,1,100,"value 1|value 2",20,30,hint
+name,type,nullable,start,length,values,hint
+id,AutoIncrementType,false,1,10,"value 1|value 2",hint
+firstname1,stringtype,false,1,50,"value 1|value 2",,hint
+firstname2,randomtexttype,false,1,100,"value 1|value 2",hint
+firstname3,integertype,false,1,0,"value 1|value 2",hint
+firstname4,doubletype,false,1,100,"value 1|value 2",hint
+firstname5,floattype,false,1,100,"value 1|value 2",hint
+firstname6,booleantype,false,1,100,"value 1|value 2",hint
+firstname7,datetype,false,1,100,"value 1|value 2",
+firstname8,timestamptype,false,1,100,"value 1|value 2",
+firstname9,uuidtype,false,1,100,"value 1|value 2",

@@ -1,5 +1,5 @@
 {
-  "default_rows": 100,
+  "default_rows": 2,
   "default_null_percentage": 10,
   "nullable_field_overrides": [],
   "seed": null,

@@ -31,15 +31,13 @@ def parse_schema_csv(file_path):
 		reader = csv.DictReader(file, delimiter=',',)
 		items: list = []
 		for row in reader:
-			print(row)
+			# print(row)
 			item = {"name": row["name"],
 				"type": row["type"],
 				"nullable": makeBoolean(row["nullable"]),
 				"start": int(row["start"]),
 				"length": int(row["length"]),
 				"values": row["values"],
-				"min": row["min"],
-				"max": row["max"],
 				"hint": row["hint"]
 			}
 			items.append(item)
