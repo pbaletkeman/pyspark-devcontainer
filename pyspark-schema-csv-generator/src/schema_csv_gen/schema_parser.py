@@ -19,7 +19,6 @@ def makeBoolean(value) -> bool:
 
 
 def parse_schema_json(file_path) -> dict:
-	print("json read")
 	with open(file_path, "r", encoding="utf-8") as file:
 		# Parse file content into a Python dictionary or list
 		data = pyjson5.load(file)
@@ -27,20 +26,29 @@ def parse_schema_json(file_path) -> dict:
 
 
 def parse_schema_csv(file_path):
-	print("csv read")
 	with open(file_path, mode="r", newline="", encoding="utf-8") as file:
 		# Parse file content into a Python dictionary or list
-		reader = csv.reader(file, delimiter=' ')
+		reader = csv.DictReader(file, delimiter=',',)
 		items: list = []
 		for row in reader:
-			item = {"name": row[0], "type": row[1], "nullable": makeBoolean(row[2]), "start": int(row[4])}
+			print(row)
+			item = {"name": row["name"],
+				"type": row["type"],
+				"nullable": makeBoolean(row["nullable"]),
+				"start": int(row["start"]),
+				"length": int(row["length"]),
+				"values": row["values"],
+				"min": row["min"],
+				"max": row["max"],
+				"hint": row["hint"]
+			}
 			items.append(item)
 
 		return items
 
-def wip():
-	print(parse_schema_json("sample.json"))
-	print(parse_schema_csv("sample.csv"))
+# def wip():
+# 	print(parse_schema_json("sample.json"))
+# 	print(parse_schema_csv("sample.csv"))
 
 
-wip()
+# wip()

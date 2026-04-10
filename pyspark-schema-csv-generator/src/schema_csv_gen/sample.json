@@ -4,13 +4,30 @@
 			"name": "id",
 			"type": "AutoIncrementType",
 			"nullable": false,
-			"start": 1
+			"start": 1,
+			"maxLength": 10,
+			"values":[
+				"value 1",
+				"value 2"
+			],
+			"min": 10,
+			"max": 20,
+			"hint": ""
+
 		},
 		{
 			"name": "id",
 			"type": "AutoIncrementType",
 			"nullable": false,
-			"start": 1
+			"start": 1,
+			"maxLength": 10,
+			"values":[
+				"value 1",
+				"value 2"
+			],
+			"min": 10,
+			"max": 20,
+			"hint": ""
 		}
 	]
 }
