@@ -1,35 +1,14 @@
 import random
-from datetime import datetime, timedelta
+
 import uuid
 
 from faker import Faker
 
-from schema_parser import (parse_schema_json, parse_schema_csv, makeBoolean)
+from schema_parser import Parser
 from config import load_config
+from util import Util
+from datetime import datetime, timedelta
 
-
-def get_random_date(start, end):
-    """Generates a random datetime between two datetime objects."""
-    delta = end - start
-    # Calculate total seconds to allow for random time as well as date
-    int_delta = int(delta.total_seconds())
-    random_second = random.randrange(int_delta * 1020304)
-    return start + timedelta(microseconds=random_second)
-
-def parse_date(date_val):
-    if isinstance(date_val, datetime):
-        return date_val
-    # Add support for datetime.date
-    if hasattr(date_val, "year") and hasattr(date_val, "month") and hasattr(date_val, "day"):
-        # Convert date to datetime at midnight
-        return datetime(date_val.year, date_val.month, date_val.day)
-    if isinstance(date_val, str):
-        for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
-            try:
-                return datetime.strptime(date_val, fmt)
-            except ValueError:
-                continue
-    raise ValueError(f"Date '{date_val}' is not in a recognized format or type.")
 
 class CreateData():
 
@@ -69,7 +48,7 @@ class CreateData():
 					# 	data = self.handle_autoincrementtype(row)
 				single_line = single_line | {row["name"]: data}
 				# all_lines.append(single_line)
-			# print(single_line)
+			print(single_line)
 
 	def handle_valuetype(self, row: dict) -> str:
 		if self.config["seed"]:
@@ -116,7 +95,7 @@ class CreateData():
 	def handle_booleantype(self, row: dict) -> str:
 		if self.config["seed"]:
 			random.seed = self.config["seed"]
-		return makeBoolean(random.randint(0, 1))
+		return Util.make_boolean(random.randint(0, 1))
 
 	def handle_timestamptype(self, row: dict) -> str:
 		if self.config["seed"]:
@@ -126,13 +105,13 @@ class CreateData():
 			start = datetime.today()
 			end = datetime.today() + timedelta(weeks=52)
 		elif isinstance(date_range, (list, tuple)):
-			start = parse_date(date_range[0])
-			end = parse_date(date_range[-1])
+			start = Util.parse_date(date_range[0])
+			end = Util.parse_date(date_range[-1])
 		else:
 			# If it's a single date/datetime object, use it as start, and add 1 year for end
-			start = parse_date(date_range)
+			start = Util.parse_date(date_range)
 			end = start + timedelta(weeks=52)
-		return get_random_date(start, end).strftime("%Y-%m-%d %H:%M:%S.%f")
+		return Util.get_random_date(start, end).strftime("%Y-%m-%d %H:%M:%S.%f")
 
 	def handle_datetype (self, row: dict) -> str:
 		return self.handle_timestamptype(row).split(" ")[0]
@@ -144,12 +123,7 @@ class CreateData():
 		pass
 
 	def load(self) -> None:
-
-		if self.config["schema"].lower().endswith("json"):
-			schema = parse_schema_json(self.config["schema"])
-		else:
-			schema = parse_schema_csv(self.config["schema"])
-		self.create_lines(schema)
+		self.create_lines(Parser.parse_schema(file_path=self.config["schema"]))
 
 
 def wip():
