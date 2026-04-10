@@ -63,23 +63,39 @@ class CreateData():
 						data = self.handle_timestamptype(row)
 					case "uuidtype":
 						data = self.handle_uuidtype(row)
+					case "valuetype":
+						data = self.handle_valuetype(row)
 					# case "autoincrementtype":
 					# 	data = self.handle_autoincrementtype(row)
 				single_line = single_line | {row["name"]: data}
 				# all_lines.append(single_line)
-			print(single_line)
+			# print(single_line)
+
+	def handle_valuetype(self, row: dict) -> str:
+		if self.config["seed"]:
+			random.seed = self.config["seed"]
+		if row["values"]:
+			values = row["values"].split("|")
+			v = [x.strip() for x in values]
+			max = len(v)-1
+			return v[random.randint(0,max)]
+		return ""
 
 	def handle_randomtexttype(self, row: dict) -> str:
 		fake = Faker()
 		if self.config["seed"]:
 			Faker.seed(self.config["seed"])
-		return fake.text()[:row["length"]]
+		if row["length"]:
+			return fake.text()[:row["length"]]
+		return fake.text()
 
 	def handle_stringtype(self, row: dict) -> str:
 		fake = Faker()
 		if self.config["seed"]:
 			Faker.seed(self.config["seed"])
-		return fake.name()[:row["length"]]
+		if row["length"]:
+			return fake.name()[:row["length"]]
+		return fake.name()
 
 	def handle_integertype(self, row: dict) -> int:
 		if self.config["seed"]:

@@ -37,8 +37,7 @@ def parse_schema_csv(file_path):
 				"nullable": makeBoolean(row["nullable"]),
 				"start": int(row["start"]),
 				"length": int(row["length"]),
-				"values": row["values"],
-				"hint": row["hint"]
+				"values": row["values"]
 			}
 			items.append(item)
 
