@@ -1,3 +1,8 @@
 [tool.ruff]
 line-length = 120
 indent-width = 5
+[tool.black]
+line-length = 120
+target-version = ['py39']
+skip-string-normalization = false
+skip-magic-trailing-comma = false

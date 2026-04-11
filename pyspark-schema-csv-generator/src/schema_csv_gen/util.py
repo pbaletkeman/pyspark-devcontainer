@@ -7,11 +7,12 @@ and date parsing. Used by data generation and parsing modules.
 Classes:
     Util: Static utility methods for data generation.
 """
+
 from datetime import datetime, timedelta
 import random
 
 
-class Util():
+class Util:
     """
     Utility class with static methods for data generation and parsing.
 

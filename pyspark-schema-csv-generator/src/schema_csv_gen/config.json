@@ -1,7 +1,6 @@
 {
   "default_rows": 2,
   "default_null_percentage": 10,
-  "nullable_field_overrides": [],
   "seed": null,
   "integer_range": [-1000, 1000],
   "float_range": [-1000.0, 1000.0],

@@ -6,12 +6,13 @@ Parses schema definitions from JSON or CSV files for data generation.
 Classes:
     Parser: Main class for parsing and validating schema files.
 """
+
 import pyjson5
 import csv
 from util import Util
 
 
-class Parser():
+class Parser:
     """
     Class for parsing schema files and validating schema definitions.
 
@@ -82,7 +83,7 @@ class Parser():
             list: List of field definition dictionaries.
         """
         with open(file_path, mode="r", newline="", encoding="utf-8") as file:
-            reader = csv.DictReader(file, delimiter=',')
+            reader = csv.DictReader(file, delimiter=",")
             items: list = []
             for row in reader:
                 item = {
@@ -91,7 +92,7 @@ class Parser():
                     "nullable": Util.make_boolean(row["f_nullable"]),
                     "start": row.get("f_start", 0),
                     "length": row.get("f_length", 0),
-                    "values": row.get("f_values", "")
+                    "values": row.get("f_values", ""),
                 }
                 items.append(item)
             return items

@@ -11,20 +11,21 @@ Usage:
     data = CreateData()
     data.load()
 """
+
 import csv
 from datetime import datetime, timedelta
 import random
 from typing import Iterator
 import uuid
 
-from faker import Faker
+from faker import Faker, config
 
 from schema_parser import Parser
 from config import load_config
 from util import Util
 
 
-class CreateData():
+class CreateData:
     """
     Main class for generating data rows and writing them to a CSV file based on a schema.
 
@@ -32,8 +33,8 @@ class CreateData():
     and writes to CSV file in specified mode (overwrite or append).
 
     Attributes:
-        config (dict): Configuration dictionary from load_config().
-        auto_increment (int): Counter for auto-increment type fields.
+    config (dict): Configuration dictionary from load_config().
+    auto_increment (int): Counter for auto-increment type fields.
     """
 
     def __init__(self):
@@ -51,7 +52,7 @@ class CreateData():
         the specified number of data rows from the schema.
 
         Args:
-            schema (list): List of field definition dictionaries from Parser.
+        schema (list): List of field definition dictionaries from Parser.
         """
         COUNTER_ROW = 50
 
@@ -68,15 +69,15 @@ class CreateData():
         with open(self.config["output"], mode=mode, newline="", encoding="utf-8") as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fields_names)
 
-            if mode == "w":
-                writer.writeheader()
+        if mode == "w":
+            writer.writeheader()
 
-            writer.writerow(first_row)
+        writer.writerow(first_row)
 
-            for i in range(self.config["default_rows"]-1):
-                if i % COUNTER_ROW == 0:
-                    print(f"{datetime.now()} - Creating row {i + 1}")
-                writer.writerows(self.create_item(schema))
+        for i in range(self.config["default_rows"] - 1):
+            if i % COUNTER_ROW == 0:
+                print(f"{datetime.now()} - Creating row {i + 1}")
+            writer.writerows(self.create_item(schema))
 
         print(f"{datetime.now()} - Finished data generation")
 
@@ -88,12 +89,13 @@ class CreateData():
         and yields a complete row dictionary.
 
         Args:
-            schema (list): List of field definition dictionaries.
+                schema (list): List of field definition dictionaries.
 
         Yields:
-            dict: A dictionary representing a single data row with field names as keys.
+                dict: A dictionary representing a single data row with field names as keys.
         """
         single_line: dict = {}
+        nulls = config["default_null_percentage"]
         for row in schema:
             data = ""
             field_type = row.get("type", "").lower()
@@ -121,7 +123,7 @@ class CreateData():
             elif field_type == "autoincrementtype":
                 data = self.handle_autoincrementtype(row)
 
-            single_line[row["name"]] = data
+        single_line[row["name"]] = data
 
         yield single_line
 
@@ -129,14 +131,14 @@ class CreateData():
         """
         Handle fields of type 'valuetype', randomly selecting from provided values.
 
-        Parses pipe-separated values and returns a random selection.
-        Respects seed configuration for reproducibility.
+                Parses pipe-separated values and returns a random selection.
+                Respects seed configuration for reproducibility.
 
-        Args:
-            row (dict): Schema field definition with 'values' key containing pipe-separated options.
+                Args:
+                row (dict): Schema field definition with 'values' key containing pipe-separated options.
 
-        Returns:
-            str: Selected value as string, or empty string if no values provided.
+                Returns:
+                str: Selected value as string, or empty string if no values provided.
         """
         if self.config.get("seed"):
             random.seed(self.config["seed"])
@@ -150,16 +152,16 @@ class CreateData():
 
     def handle_randomtexttype(self, row: dict) -> str:
         """
-        Handle fields of type 'randomtexttype', generating random text using Faker.
+                Handle fields of type 'randomtexttype', generating random text using Faker.
 
-        Generates realistic random text. Truncates to f_length if specified.
+             Generates realistic random text. Truncates to f_length if specified.
         Respects seed configuration for reproducibility.
 
-        Args:
-            row (dict): Schema field definition with optional 'length' key.
+                Args:
+                row (dict): Schema field definition with optional 'length' key.
 
-        Returns:
-            str: Generated random text.
+                Returns:
+                str: Generated random text.
         """
         fake = Faker()
         if self.config.get("seed"):
@@ -167,21 +169,21 @@ class CreateData():
 
         text = fake.text()
         if row.get("length"):
-            return text[:int(row["length"])]
+            return text[: int(row["length"])]
         return text
 
     def handle_stringtype(self, row: dict) -> str:
         """
-        Handle fields of type 'stringtype', generating random names using Faker.
+                Handle fields of type 'stringtype', generating random names using Faker.
 
         Generates realistic random names. Truncates to f_length if specified.
         Respects seed configuration for reproducibility.
 
         Args:
-            row (dict): Schema field definition with optional 'length' key.
+                row (dict): Schema field definition with optional 'length' key.
 
-        Returns:
-            str: Generated random name.
+                Returns:
+                str: Generated random name.
         """
         fake = Faker()
         if self.config.get("seed"):
@@ -189,7 +191,7 @@ class CreateData():
 
         name = fake.name()
         if row.get("length"):
-            return name[:int(row["length"])]
+            return name[: int(row["length"])]
         return name
 
     def handle_integertype(self, row: dict) -> str:
@@ -200,10 +202,10 @@ class CreateData():
         Respects seed configuration for reproducibility.
 
         Args:
-            row (dict): Schema field definition.
+        row (dict): Schema field definition.
 
         Returns:
-            str: Generated integer as string.
+        str: Generated integer as string.
         """
         if self.config.get("seed"):
             random.seed(self.config["seed"])
@@ -219,10 +221,10 @@ class CreateData():
         Respects seed configuration for reproducibility.
 
         Args:
-            row (dict): Schema field definition.
+        row (dict): Schema field definition.
 
         Returns:
-            str: Generated float as string with 5 decimal places.
+        str: Generated float as string with 5 decimal places.
         """
         if self.config.get("seed"):
             random.seed(self.config["seed"])
@@ -237,10 +239,10 @@ class CreateData():
         Delegates to handle_doubletype as both types generate floats.
 
         Args:
-            row (dict): Schema field definition.
+        row (dict): Schema field definition.
 
         Returns:
-            str: Generated float as string.
+        str: Generated float as string.
         """
         return self.handle_doubletype(row)
 
@@ -252,10 +254,10 @@ class CreateData():
         Respects seed configuration for reproducibility.
 
         Args:
-            row (dict): Schema field definition.
+        row (dict): Schema field definition.
 
         Returns:
-            str: Generated boolean as string ("True" or "False").
+        str: Generated boolean as string ("True" or "False").
         """
         if self.config.get("seed"):
             random.seed(self.config["seed"])
@@ -271,10 +273,10 @@ class CreateData():
         Respects seed configuration for reproducibility.
 
         Args:
-            row (dict): Schema field definition.
+        row (dict): Schema field definition.
 
         Returns:
-            str: Generated timestamp as formatted string.
+        str: Generated timestamp as formatted string.
         """
         if self.config.get("seed"):
             random.seed(self.config["seed"])
@@ -293,7 +295,7 @@ class CreateData():
 
         return str(Util.get_random_date(start, end).strftime("%Y-%m-%d %H:%M:%S.%f"))
 
-    def handle_datetype (self, row: dict) -> str:
+    def handle_datetype(self, row: dict) -> str:
         """
         Handle fields of type 'datetype', generating random dates.
 
@@ -301,10 +303,10 @@ class CreateData():
         Returns formatted as "YYYY-MM-DD".
 
         Args:
-            row (dict): Schema field definition.
+        row (dict): Schema field definition.
 
         Returns:
-            str: Generated date as formatted string.
+        str: Generated date as formatted string.
         """
         return str(self.handle_timestamptype(row).split(" ")[0])
 
@@ -315,10 +317,10 @@ class CreateData():
         Generates a unique UUID version 1 for each field.
 
         Args:
-            row (dict): Schema field definition.
+        row (dict): Schema field definition.
 
         Returns:
-            str: Generated UUID as string.
+        str: Generated UUID as string.
         """
         return str(uuid.uuid1())
 
@@ -330,10 +332,10 @@ class CreateData():
         Increments counter and returns new value for each row.
 
         Args:
-            row (dict): Schema field definition with optional 'start' value.
+                row (dict): Schema field definition with optional 'start' value.
 
         Returns:
-            str: Generated auto-increment value as string.
+        str: Generated auto-increment value as string.
         """
         start_value = int(row.get("start", self.auto_increment))
         self.auto_increment = start_value + 1
@@ -354,7 +356,6 @@ class CreateData():
 def wip():
     """
     Entry point for running data generation as a script.
-
     Creates a CreateData instance and calls load() to generate data.
     """
     data: CreateData = CreateData()
