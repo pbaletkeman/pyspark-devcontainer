@@ -36,12 +36,12 @@ class Parser():
 			items: list = []
 			for row in reader:
 				# print(row)
-				item = {"name": row["name"],
-					"type": row["type"],
-					"nullable": Util.make_boolean(row["nullable"]),
-					"start": int(row["start"]),
-					"length": int(row["length"]),
-					"values": row["values"]
+				item = {"name": row["f_name"],
+					"type": row["f_type"],
+					"nullable": Util.make_boolean(row["f_nullable"]),
+					"start": row.get("f_start", 0),
+					"length": row.get("f_length", 0),
+					"values": row.get("f_values", "")
 				}
 				items.append(item)
 

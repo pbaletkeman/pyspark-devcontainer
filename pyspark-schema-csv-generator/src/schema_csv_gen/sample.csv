@@ -1,11 +1,11 @@
-name,type,nullable,start,length,values
-id,AutoIncrementType,false,541,10,"value 1|value 2"
-firstname1,stringtype,false,1,50,"value a|value b",
-firstname2,randomtexttype,false,1,100,"value 3|value 4"
-firstname3,integertype,false,1,0,"value c|value d"
-firstname4,doubletype,false,1,100,"value 5|value 6"
-firstname5,floattype,false,1,100,"value e|value f"
-firstname6,booleantype,false,1,100,"value 7|value 8"
-firstname7,datetype,false,1,100,"value g|value h"
-firstname8,timestamptype,false,1,100,"value 9|value 0"
-firstname9,valuetype,false,1,100,"value a | value b | value c  |  value d |   value e|value f|value g|value h|value i"
+f_name,f_type,f_nullable,f_start,f_length,f_values
+id,AutoIncrementType,false,541
+firstname,stringtype,false,1,50
+lastname,randomtexttype,false,1,100
+age,integertype,false
+owning,doubletype,false
+winning,floattype,false
+single,booleantype,false
+startDate,datetype,false
+lunchTime,timestamptype,false
+color,valuetype,false,1,100,"green | blue | yellow  |  black |   cyan|pink|white|green|red"

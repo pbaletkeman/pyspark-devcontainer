@@ -66,7 +66,7 @@ class CreateData():
 		if self.config["seed"]:
 			Faker.seed(self.config["seed"])
 		if row["length"]:
-			return fake.text()[:row["length"]]
+			return fake.text()[:int(row["length"])]
 		return fake.text()
 
 	def handle_stringtype(self, row: dict) -> str:
@@ -74,7 +74,7 @@ class CreateData():
 		if self.config["seed"]:
 			Faker.seed(self.config["seed"])
 		if row["length"]:
-			return fake.name()[:row["length"]]
+			return fake.name()[:int(row["length"])]
 		return fake.name()
 
 	def handle_integertype(self, row: dict) -> int:
@@ -121,7 +121,7 @@ class CreateData():
 		return str(uuid.uuid1())
 
 	def handle_autoincrementtype(self, row: dict) -> str:
-		self.auto_increment = row.get("start", self.auto_increment)
+		self.auto_increment = int(row.get("start", self.auto_increment))
 		self.auto_increment += 1
 		row["start"] = self.auto_increment
 		return str(self.auto_increment)
