@@ -7,10 +7,19 @@ class Parser():
 
 	@classmethod
 	def parse_schema(cls, file_path) -> dict:
+		retval: dict = {}
 		if str(file_path.lower()).endswith(".json"):
-			return Parser.parse_schema_json(file_path)
+			retval = Parser.parse_schema_json(file_path)
 		else:
-			return Parser.parse_schema_csv(file_path)
+			retval = Parser.parse_schema_csv(file_path)
+
+		if Parser.has_duplicate_auto(retval):
+			raise Exception("duplicate field auto increment")
+
+		if Parser.has_duplicate_names(retval):
+			raise Exception("duplicate field in schema")
+
+		return retval
 
 	@classmethod
 	def parse_schema_json(cls, file_path: str) -> dict:
@@ -37,6 +46,28 @@ class Parser():
 				items.append(item)
 
 			return items
+
+	@classmethod
+	def has_duplicate_auto(cls, records: list[dict]) -> bool:
+		auto_found = False
+		for record in records:
+			if record.get("type").lower() == "autoincrementtype":
+				if auto_found:
+					return True
+				else:
+					auto_found = True
+		return False
+
+	@classmethod
+	def has_duplicate_names(cls, records: list[dict]) -> bool:
+		key = "name"
+		names = set()
+		for record in records:
+			name = record.get(key)
+			if name in names:
+				return True
+			names.add(name)
+		return False
 
 # def wip():
 # 	print(parse_schema_json("sample.json"))

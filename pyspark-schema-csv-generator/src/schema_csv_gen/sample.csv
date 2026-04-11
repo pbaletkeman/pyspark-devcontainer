@@ -1,5 +1,5 @@
 name,type,nullable,start,length,values
-id,AutoIncrementType,false,1,10,"value 1|value 2"
+id,AutoIncrementType,false,541,10,"value 1|value 2"
 firstname1,stringtype,false,1,50,"value a|value b",
 firstname2,randomtexttype,false,1,100,"value 3|value 4"
 firstname3,integertype,false,1,0,"value c|value d"
@@ -8,4 +8,4 @@ firstname5,floattype,false,1,100,"value e|value f"
 firstname6,booleantype,false,1,100,"value 7|value 8"
 firstname7,datetype,false,1,100,"value g|value h"
 firstname8,timestamptype,false,1,100,"value 9|value 0"
-firstname9,valuetype,false,1,100,"value a | value b | value c  |  value d |   value e|value f|value g|value h|value i"
+firstname1,AutoIncrementType,false,1,100,"value a | value b | value c  |  value d |   value e|value f|value g|value h|value i"

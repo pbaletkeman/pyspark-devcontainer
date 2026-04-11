@@ -14,6 +14,7 @@ class CreateData():
 
 	def __init__(self):
 		self.config = load_config()
+		self.auto_increment = 0
 
 
 	def create_lines(self, schema: list[dict]) -> str:
@@ -44,11 +45,12 @@ class CreateData():
 						data = self.handle_uuidtype(row)
 					case "valuetype":
 						data = self.handle_valuetype(row)
-					# case "autoincrementtype":
-					# 	data = self.handle_autoincrementtype(row)
+					case "autoincrementtype":
+						data = self.handle_autoincrementtype(row)
+						print(data)
 				single_line = single_line | {row["name"]: data}
 				# all_lines.append(single_line)
-			print(single_line)
+			# print(single_line)
 
 	def handle_valuetype(self, row: dict) -> str:
 		if self.config["seed"]:
@@ -57,7 +59,7 @@ class CreateData():
 			values = row["values"].split("|")
 			v = [x.strip() for x in values]
 			max = len(v)-1
-			return v[random.randint(0,max)]
+			return str(v[random.randint(0,max)])
 		return ""
 
 	def handle_randomtexttype(self, row: dict) -> str:
@@ -81,7 +83,7 @@ class CreateData():
 			random.seed = self.config["seed"]
 		int_range = self.config.get("integer_range", [0, 10])
 
-		return random.randint(int(int_range[0]), int(int_range[-1]))
+		return str(random.randint(int(int_range[0]), int(int_range[-1])))
 
 	def handle_doubletype(self, row: dict) -> float:
 		if self.config["seed"]:
@@ -95,7 +97,7 @@ class CreateData():
 	def handle_booleantype(self, row: dict) -> str:
 		if self.config["seed"]:
 			random.seed = self.config["seed"]
-		return Util.make_boolean(random.randint(0, 1))
+		return str(Util.make_boolean(random.randint(0, 1)))
 
 	def handle_timestamptype(self, row: dict) -> str:
 		if self.config["seed"]:
@@ -111,16 +113,19 @@ class CreateData():
 			# If it's a single date/datetime object, use it as start, and add 1 year for end
 			start = Util.parse_date(date_range)
 			end = start + timedelta(weeks=52)
-		return Util.get_random_date(start, end).strftime("%Y-%m-%d %H:%M:%S.%f")
+		return str(Util.get_random_date(start, end).strftime("%Y-%m-%d %H:%M:%S.%f"))
 
 	def handle_datetype (self, row: dict) -> str:
-		return self.handle_timestamptype(row).split(" ")[0]
+		return str(self.handle_timestamptype(row).split(" ")[0])
 
 	def handle_uuidtype(self, row: dict) -> str:
 		return str(uuid.uuid1())
 
 	def handle_autoincrementtype(self, row: dict) -> str:
-		pass
+		self.auto_increment = row.get("start", self.auto_increment)
+		self.auto_increment += 1
+		row["start"] = self.auto_increment
+		return str(self.auto_increment)
 
 	def load(self) -> None:
 		self.create_lines(Parser.parse_schema(file_path=self.config["schema"]))
