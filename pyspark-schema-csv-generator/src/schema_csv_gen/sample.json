@@ -2,32 +2,83 @@
 	"fields": [
 		{
 			"name": "id",
-			"type": "AutoIncrementType",
+			"type": "Autoincrementtype",
 			"nullable": false,
-			"start": 1,
-			"maxLength": 10,
-			"values":[
-				"value 1",
-				"value 2"
-			],
-			"min": 10,
-			"max": 20,
-			"hint": ""
-
+			"start": 541,
+			"length": 0,
+			"values": ""
 		},
 		{
-			"name": "id",
-			"type": "AutoIncrementType",
+			"name": "firstname",
+			"type": "stringtype",
 			"nullable": false,
 			"start": 1,
-			"maxLength": 10,
-			"values":[
-				"value 1",
-				"value 2"
-			],
-			"min": 10,
-			"max": 20,
-			"hint": ""
+			"length": 50,
+			"values": ""
+		},
+		{
+			"name": "lastname",
+			"type": "randomtexttype",
+			"nullable": false,
+			"start": 1,
+			"length": 100,
+			"values": ""
+		},
+		{
+			"name": "age",
+			"type": "integertype",
+			"nullable": false,
+			"start": 0,
+			"length": 0,
+			"values": ""
+		},
+		{
+			"name": "owning",
+			"type": "doubletype",
+			"nullable": false,
+			"start": 0,
+			"length": 0,
+			"values": ""
+		},
+		{
+			"name": "winning",
+			"type": "floattype",
+			"nullable": false,
+			"start": 0,
+			"length": 0,
+			"values": ""
+		},
+		{
+			"name": "single",
+			"type": "booleantype",
+			"nullable": false,
+			"start": 0,
+			"length": 0,
+			"values": ""
+		},
+		{
+			"name": "startDate",
+			"type": "datetype",
+			"nullable": false,
+			"start": 0,
+			"length": 0,
+			"values": ""
+		},
+		{
+			"name": "lunchTime",
+			"type": "timestamptype",
+			"nullable": false,
+			"start": 0,
+			"length": 0,
+			"values": ""
+		},
+		{
+			"name": "color",
+			"type": "valuetype",
+			"nullable": false,
+			"start": 1,
+			"length": 100,
+			"values": "green | blue | yellow | black | cyan | pink | white | red"
 		}
 	]
 }

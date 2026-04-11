@@ -25,7 +25,7 @@ You want a tool/script that:
  - **DateType**: Random dates between 2 years ago and 1 year from now (format: YYYY-MM-DD) (configurable range via CLI or config file)
  - **TimestampType**: Random timestamps in same range (format: ISO 8601) (configurable range via CLI or config file)
  - **UUIDType**: Random UUIDs (v4) generated for each row
- - **AutoIncrementType**: Integer sequence starting from a configurable value (default: 1, can be set per field in schema or via CLI/config)
+ - **Autoincrementtype**: Integer sequence starting from a configurable value (default: 1, can be set per field in schema or via CLI/config)
 
 ### Schema File Formats
 
@@ -33,7 +33,7 @@ You want a tool/script that:
 ```json
 {
   "fields": [
-    {"name": "id", "type": "AutoIncrementType", "nullable": false, "start": 1},
+    {"name": "id", "type": "Autoincrementtype", "nullable": false, "start": 1},
     {"name": "uuid", "type": "UUIDType", "nullable": false},
     {"name": "name", "type": "StringType", "nullable": false},
     {"name": "email", "type": "StringType", "nullable": true},
@@ -46,7 +46,7 @@ You want a tool/script that:
 
 **Text Format (DSL-style)**
 ```
-id AutoIncrementType NOT NULL START 1
+id Autoincrementtype NOT NULL START 1
 uuid UUIDType NOT NULL
 name StringType NOT NULL
 email StringType NULLABLE
@@ -86,7 +86,7 @@ is_active BooleanType NOT NULL
 --null-percentage N    (optional) Percentage of null values (0-100, default: 10)
 --config FILE          (optional) Path to config file for defaults
 --non-nullable-fields F1,F2,F3  (optional) Force fields to never be null
---autoinc-start FIELD,VALUE    (optional) Set start value for AutoIncrementType fields, e.g. --autoinc-start id,1000
+--autoinc-start FIELD,VALUE    (optional) Set start value for Autoincrementtype fields, e.g. --autoinc-start id,1000
 --seed N               (optional) Random seed for reproducible output
 --help                 (optional) Display usage instructions
 ```

@@ -45,18 +45,18 @@ JSON schema:
 ```json
 {
   "fields": [
-    {"name": "id", "type": "AutoIncrementType", "nullable": false, "start": 1}
+    {"name": "id", "type": "Autoincrementtype", "nullable": false, "start": 1}
   ]
 }
 ```
 Text schema:
 ```
-id AutoIncrementType NOT NULL START 1
+id Autoincrementtype NOT NULL START 1
 ```
 
 **Output Example:**
 ```python
-[{"name": "id", "type": "AutoIncrementType", "nullable": False, "start": 1}]
+[{"name": "id", "type": "Autoincrementtype", "nullable": False, "start": 1}]
 ```
 
 ---
@@ -116,7 +116,7 @@ Possible values: `1234.56`, `-999.99`, `None` (if null is chosen)
 - Collect rows for CSV output.
 
 **Input Example:**
-Schema: `[{"name": "id", "type": "AutoIncrementType", "nullable": False, "start": 1}]`
+Schema: `[{"name": "id", "type": "Autoincrementtype", "nullable": False, "start": 1}]`
 Rows: `3`
 
 **Output Example:**

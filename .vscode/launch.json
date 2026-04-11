@@ -6,7 +6,7 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/pyspark-schema-csv-generator/src/schema_csv_gen/data_generators.py",
-            "args": ["sample.csv"],
+            "args": ["sample.csv", "file.csv", "--rows", "10000", "--mode", "o"],
             "cwd": "${workspaceFolder}/pyspark-schema-csv-generator/src/schema_csv_gen"
         }
     ]
