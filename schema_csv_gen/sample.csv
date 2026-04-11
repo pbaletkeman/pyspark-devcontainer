@@ -7,7 +7,7 @@ brt_processing_status, valuetype, false, na, na, "0|1|2|4"
 brt_participant_req_ref,randomtexttype,false,1,30
 brt_participant_endtoend_id,randomtexttype,false,1,30
 brt_req_processing_date, timestamptype, false,
-brt_account_number,randomtexttype,fase,1,30
+brt_account_number,stringtype,fase,1,30
 brt_requested_amount, floattype,false
 brt_ccf_endpoint_version,randomtexttype,false,1,4
 brt_fi_id,valuetype,false,na,na,"CA000001|CA000004|CA000002|CA000003"

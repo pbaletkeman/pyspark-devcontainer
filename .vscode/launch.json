@@ -5,9 +5,9 @@
             "name": "Run data_generators.py with sample.csv",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/pyspark-schema-csv-generator/src/schema_csv_gen/data_generators.py",
-            "args": ["sample.csv", "file.csv", "--rows", "10", "--mode", "o"],
-            "cwd": "${workspaceFolder}/pyspark-schema-csv-generator/src/schema_csv_gen"
+            "program": "${workspaceFolder}/schema_csv_gen/data_generators.py",
+            "args": ["schema_csv_gen/sample.csv", "schema_csv_gen/file.csv", "--rows", "10", "--mode", "o"],
+            "cwd": "${workspaceFolder}"
         }
     ]
 }
