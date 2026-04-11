@@ -47,10 +47,9 @@ class CreateData():
 						data = self.handle_valuetype(row)
 					case "autoincrementtype":
 						data = self.handle_autoincrementtype(row)
-						print(data)
 				single_line = single_line | {row["name"]: data}
-				# all_lines.append(single_line)
-			# print(single_line)
+			all_lines.append(single_line)
+			print(all_lines)
 
 	def handle_valuetype(self, row: dict) -> str:
 		if self.config["seed"]:
