@@ -63,7 +63,7 @@ class CreateData:
 
         if self.config["mode"].lower() in ("a", "append"):
             mode = "a"
-
+        start_time = datetime.now()
         print(f"{datetime.now()} - Starting data generation with config: {self.config}")
         print(f"{datetime.now()} - Creating file {self.config['output']} with mode {mode} and fields {fields_names}")
 
@@ -80,6 +80,7 @@ class CreateData:
                     print(f"{datetime.now()} - Creating row {i + 1}")
                 writer.writerows(self.create_item(schema))
 
+        print(f"{start_time} - Started data generation")
         print(f"{datetime.now()} - Finished data generation")
 
     def create_item(self, schema: list) -> Iterator[dict]:
