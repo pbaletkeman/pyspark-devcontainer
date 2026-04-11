@@ -96,7 +96,7 @@ class CreateData:
         """
 
         single_line: dict = {}
-        null_threshold: float = self.config.get("default_null_percentage", 0.0) / 100.0
+        null_threshold: float = self.config.get("default_null_percentage", 10.0) / 100.0
 
         if self.config.get("seed"):
             random.seed(self.config["seed"])
