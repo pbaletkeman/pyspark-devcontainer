@@ -1,11 +1,28 @@
 f_name,f_type,f_nullable,f_start,f_length,f_values
-id,Autoincrementtype,false,541
-firstname,stringtype,true,1,50
-lastname,randomtexttype,false,1,100
-age,integertype,false
-owning,doubletype,true
-winning,floattype,false
-single,booleantype,false
-startDate,datetype,false
-lunchTime,timestamptype,false
-color,valuetype,false,1,100,"green | blue | yellow  |  black |   cyan|pink|white|green|red"
+brf_brf_id,Autoincrementtype,True,97531,
+brk_fi_id, randomtexttype,false,1,15
+brf_indirect_connector_id, valuetype, false, na, na, "CA000001|CA000004|CA000002|CA000003"
+brt_payment_req_ref_num, randomtexttype,false,1,15
+brt_processing_status, valuetype, false, na, na, "0|1|2|4"
+brt_participant_req_ref,randomtexttype,false,1,30
+brt_participant_endtoend_id,randomtexttype,false,1,30
+brt_req_processing_date, timestamptype, false,
+brt_account_number,randomtexttype,fase,1,30
+brt_requested_amount, floattype,false
+brt_ccf_endpoint_version,randomtexttype,false,1,4
+brt_fi_id,valuetype,false,na,na,"CA000001|CA000004|CA000002|CA000003"
+brt_org_message_id,randomtexttype,false,1,30
+payer_primary_name,stringtype,false,1,50
+payer_address1,stringtype,true,1,50
+payer_address2,stringtype,true,1,50
+payer_city,stringtype,false,1,50
+payer_postal_code, randomtexttype,false,1,8
+payer_province_code, randomtexttype,false,1,2
+payer_country_iso_code, valuetype, false, na, na, "CA|US"
+payer_fi_userid, valuetype, false, na, na, "CA000001|CA000004|CA000002|CA000003"
+brt_cancel_participant_req_ref,randomtexttype,false,1,30
+brF_cancel_org_message_id,randomtexttype,false,1,30
+brf_cancel_fi_creation_date, timestamptype, false,
+pr_date_updated, timestamptype, True,
+pr_payment_req_status, valuetype, false, na, na, "0|1|2|3|4|5"
+prhd_payment_req_status, valuetype, false, na, na, "0|1|2|3|4|5"

@@ -96,14 +96,14 @@ class CreateData:
         """
 
         single_line: dict = {}
-        null_threshold: float = self.config.get("default_null_percentage", random.random() * 100)
+        null_threshold: float = self.config.get("default_null_percentage", 0.0) / 100.0
 
         if self.config.get("seed"):
             random.seed(self.config["seed"])
         for row in schema:
             data = ""
-            field_type = row.get("type", "").lower()
-            nulls: float = random.random() * 100
+            field_type = row.get("type", "").lower().strip()
+            nulls: float = random.random()
 
             if field_type == "stringtype":
                 data = self.handle_stringtype(row)
@@ -127,13 +127,21 @@ class CreateData:
                 data = self.handle_valuetype(row)
             elif field_type == "autoincrementtype":
                 data = self.handle_autoincrementtype(row)
-
             if row["nullable"] and nulls <= null_threshold and field_type != "autoincrementtype":
                 single_line[row["name"]] = ""
             else:
-                single_line[row["name"]] = data
+                single_line[row["name"]] = str(data).strip('"')
 
         yield single_line
+
+    def handle_randomtexttype(self, row: dict) -> str:
+        LETTERS_NUMBER = "abcdefghijklmnopqrstuvwxyz0123456789-+*/+=-|;:<>,.ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        retval: str = ""
+        l = row.get("length",10)
+        for i in range(int(l)):
+            retval = str(retval) + LETTERS_NUMBER[random.randint(0,len(LETTERS_NUMBER))-1]
+
+        return retval
 
     def handle_valuetype(self, row: dict) -> str:
         """
@@ -153,32 +161,10 @@ class CreateData:
 
         if row.get("values"):
             values = row["values"].split("|")
-            v = [x.strip() for x in values]
+            v = [x.strip().strip('"').strip('"') for x in values]
             max_index = len(v) - 1
             return str(v[random.randint(0, max_index)])
         return ""
-
-    def handle_randomtexttype(self, row: dict) -> str:
-        """
-        Handle fields of type 'randomtexttype', generating random text using Faker.
-
-        Generates realistic random text. Truncates to f_length if specified.
-        Respects seed configuration for reproducibility.
-
-        Args:
-            row (dict): Schema field definition with optional 'length' key.
-
-        Returns:
-            str: Generated random text.
-        """
-        fake = Faker()
-        if self.config.get("seed"):
-            Faker.seed(self.config["seed"])
-
-        text = fake.text()
-        if row.get("length"):
-            return text[: int(row["length"])].replace("\n", " ")
-        return text
 
     def handle_stringtype(self, row: dict) -> str:
         """

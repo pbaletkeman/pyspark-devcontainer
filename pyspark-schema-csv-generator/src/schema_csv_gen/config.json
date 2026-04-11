@@ -1,9 +1,9 @@
 {
-  "default_rows": 2,
+  "default_rows": 20,
   "default_null_percentage": 10,
   "seed": null,
-  "integer_range": [-1000, 1000],
-  "float_range": [-1000.0, 1000.0],
+  "integer_range": [10, 1000],
+  "float_range": [10.0, 1000.0],
   "date_range": ["2024-04-09", "2027-04-09"],
   "timestamp_range": ["2024-04-09T00:00:00", "2027-04-09T23:59:59"]
 }

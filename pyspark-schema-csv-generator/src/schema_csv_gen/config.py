@@ -82,10 +82,10 @@ def load_config() -> dict:
         config["output"] = args.output
         config["mode"] = args.mode
         config["default_rows"] = args.rows or config.get("default_rows", 10)
-        config["default_null_percentage"] = args.null_percentage or config.get("default_null_percentage", default_null)
+        config["default_null_percentage"] = args.null_percentage or config.get("default_null_percentage", 0.0)
         config["seed"] = args.seed or config.get("seed")
         config["integer_range"] = args.integer_range or config.get("integer_range", [0, 10])
-        config["float_range"] = args.float_range or config.get("float_range", [-10, 10])
+        config["float_range"] = args.float_range or config.get("float_range", [0.0, 10.0])
         config["date_range"] = args.date_range or config.get("date_range", datetime.date.today())
         config["timestamp_range"] = args.timestamp_range or config.get("timestamp_range", datetime.date.today())
     else:
@@ -94,10 +94,10 @@ def load_config() -> dict:
             "mode": args.mode,
             "schema": args.schema,
             "default_rows": args.rows or 10,
-            "default_null_percentage": args.null_percentage or default_null,
+            "default_null_percentage": args.null_percentage or 0.0,
             "seed": args.seed,
-            "integer_range": args.integer_range or [0, 10],
-            "float_range": args.float_range or [-10, 10],
+            "integer_range": args.integer_range or [10, 1000],
+            "float_range": args.float_range or [10.0, 1000.0],
             "date_range": args.date_range or datetime.date.today(),
             "timestamp_range": args.timestamp_range or datetime.date.today(),
         }
