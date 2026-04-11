@@ -13,6 +13,7 @@ Usage:
 """
 
 import csv
+from collections import defaultdict
 from datetime import datetime, timedelta
 import random
 from typing import Iterator
@@ -42,7 +43,7 @@ class CreateData:
         Initialize CreateData with configuration and auto-increment counter.
         """
         self.config = load_config()
-        self.auto_increment = 0
+        self.autos = defaultdict(int)
 
     def create_file(self, schema: list):
         """
@@ -331,10 +332,10 @@ class CreateData:
         Returns:
             str: Generated auto-increment value as string.
         """
-        start_value = int(row.get("start", self.auto_increment))
-        self.auto_increment = start_value + 1
-        row["start"] = self.auto_increment
-        return str(self.auto_increment)
+        start_value = int(row.get("start", self.autos[row["name"]]))
+        self.autos[row["name"]] = start_value + 1
+        row["start"] = self.autos[row["name"]]
+        return str(self.autos[row["name"]])
 
     def load(self) -> None:
         """

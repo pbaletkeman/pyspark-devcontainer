@@ -1,290 +1,236 @@
-# pyspark-schema-csv-generator
+# Schema CSV Generator
 
-This project generates CSV files with random or schema-driven data for testing and development, using a configurable schema and options.
+A Python tool for generating synthetic CSV data using schema-driven definitions. Supports both CSV and JSON schema formats, flexible field types, null value control, and reproducible random data generation for testing and development.
 
-- [pyspark-schema-csv-generator](#pyspark-schema-csv-generator)
-  - [Configuration Options](#configuration-options)
-  - [Schema CSV Rows](#schema-csv-rows)
-    - [Supported Data Types (f\_type)](#supported-data-types-f_type)
-  - [Example Usage](#example-usage)
-  - [Example Schema CSV](#example-schema-csv)
-  - [Configuration File (config.json)](#configuration-file-configjson)
-    - [Example config.json](#example-configjson)
-    - [config.json Fields](#configjson-fields)
-  - [Usage with Config File](#usage-with-config-file)
-  - [Setup Instructions](#setup-instructions)
+- [Schema CSV Generator](#schema-csv-generator)
+  - [Quick Start](#quick-start)
+  - [Project Structure](#project-structure)
+  - [Installation](#installation)
     - [Prerequisites](#prerequisites)
-    - [Python Virtual Environment Setup](#python-virtual-environment-setup)
-      - [Create a Virtual Environment](#create-a-virtual-environment)
-      - [Install Dependencies](#install-dependencies)
-      - [Deactivate Virtual Environment](#deactivate-virtual-environment)
-    - [Dependencies](#dependencies)
-      - [requirements.txt](#requirementstxt)
-    - [Running the Generator](#running-the-generator)
-  - [Sample Schema Files](#sample-schema-files)
-    - [sample.csv - CSV Format Schema Definition](#samplecsv---csv-format-schema-definition)
-    - [sample.json - JSON5 Format Schema Definition](#samplejson---json5-format-schema-definition)
-    - [Comparing CSV vs JSON Schema Formats](#comparing-csv-vs-json-schema-formats)
-    - [Creating Custom Schemas](#creating-custom-schemas)
+    - [Setup](#setup)
+  - [Usage](#usage)
+    - [Command Line](#command-line)
+      - [Required Arguments](#required-arguments)
+      - [Options](#options)
+      - [Examples](#examples)
+    - [As a Python Module](#as-a-python-module)
+  - [Configuration](#configuration)
+    - [config.json](#configjson)
+      - [Example config.json](#example-configjson)
+      - [Configuration Fields](#configuration-fields)
+  - [Schema Format](#schema-format)
+    - [CSV Schema](#csv-schema)
+    - [JSON Schema](#json-schema)
+  - [Field Types](#field-types)
+    - [Basic Types](#basic-types)
+    - [Date \& Time Types](#date--time-types)
+    - [Special Types](#special-types)
+  - [Null Value Generation](#null-value-generation)
+    - [How Nulls Work](#how-nulls-work)
+    - [Example Scenario](#example-scenario)
+    - [Key Points](#key-points)
+  - [Code Modules](#code-modules)
+    - [config.py](#configpy)
+    - [schema\_parser.py](#schema_parserpy)
+    - [data\_generators.py](#data_generatorspy)
+    - [util.py](#utilpy)
+  - [Examples](#examples-1)
+    - [Example 1: Generate 20 Rows with 80% Nulls](#example-1-generate-20-rows-with-80-nulls)
+    - [Example 2: Reproducible Data with Seed](#example-2-reproducible-data-with-seed)
+    - [Example 3: Custom Integer and Float Ranges](#example-3-custom-integer-and-float-ranges)
+  - [Troubleshooting](#troubleshooting)
+  - [Code Quality](#code-quality)
+  - [License](#license)
+  - [Version History](#version-history)
 
-## Configuration Options
 
-Configuration can be provided via command-line arguments and/or a JSON5 config file. The main options are:
+---
 
-| Option                      | CLI Argument / Config Key         | Type      | Description                                                                                 |
-|-----------------------------|-----------------------------------|-----------|---------------------------------------------------------------------------------------------|
-| schema                      | positional (required)             | str       | Path to schema definition file (.json or .csv)                                              |
-| output                      | positional (required)             | str       | Output CSV file path                                                                        |
-| mode                        | --mode / mode                     | str       | Write mode: 'append', 'a', 'overwrite', 'o' (default: 'overwrite')                          |
-| rows                        | --rows / default_rows             | int       | Number of data rows to generate                                                             |
-| null_percentage             | --null_percentage / default_null_percentage | int | Percentage of null values in generated data (default: 5)                                    |
-| nullable_field_overrides    | --nullable_field_overrides / nullable_field_overrides | list | Fields that cannot be null (comma-separated or list)                                        |
-| seed                        | --seed / seed                     | int       | Random seed for reproducible results                                                        |
-| integer_range               | --integer_range / integer_range   | list[int] | Lower and upper bounds for integer fields (default: [0, 10])                                |
-| float_range                 | --float_range / float_range       | list[float]| Lower and upper bounds for float fields (default: [-10, 10])                                |
-| date_range                  | --date_range / date_range         | list[str] | Lower and upper bounds for date fields (YYYY-MM-DD)                                         |
-| timestamp_range             | --timestamp_range / timestamp_range | list[str] | Lower and upper bounds for timestamp fields (YYYY-MM-DDTHH:MM:SS)                           |
-| config                      | --config                          | str       | Path to additional config file (JSON5)                                                      |
+## Quick Start
 
-## Schema CSV Rows
+```bash
+# Generate 10 rows using sample schema
+python3 schema_csv_gen/data_generators.py schema_csv_gen/sample.csv schema_csv_gen/output.csv --rows 10 --mode overwrite
 
-A schema CSV file defines the structure of the generated data. Each row describes a field:
+# Generate 100 rows with 80% null probability on nullable fields
+python3 schema_csv_gen/data_generators.py schema_csv_gen/sample.csv schema_csv_gen/output.csv --rows 100 --null_percentage 80
 
-| Column      | Description                                                                 |
-|-------------|-----------------------------------------------------------------------------|
-| f_name      | Field name (column name in output CSV)                                      |
-| f_type      | Data type (see below)                                                       |
-| f_nullable  | Whether the field can be null (true/false)                                  |
-| f_start     | (Optional) Start value for auto-increment fields                            |
-| f_length    | (Optional) Max length for string or text fields                             |
-| f_values    | (Optional) Pipe-separated list of possible values for 'valuetype' fields    |
-
-### Supported Data Types (f_type)
-
-- `AutoincrementtType`: Sequential integer, auto-incremented per row
-- `StringType`: Random name (Faker)
-- `RandomTextType`: Random text (Faker)
-- `IntegerType`: Random integer in range
-- `DoubleType`: Random float in range
-- `FloatType`: Random float in range
-- `BooleanType`: Random boolean (true/false)
-- `DateType`: Random date in range
-- `TimestampType`: Random timestamp in range
-- `UUIDType`: Random UUID
-- `ValueType`: Random value from provided list (see f_values)
-
-## Example Usage
-
-```sh
-python data_generators.py sample.csv output.csv --rows 10000 --mode o
+# With custom config file
+python3 schema_csv_gen/data_generators.py schema_csv_gen/sample.csv schema_csv_gen/output.csv --config custom_config.json
 ```
 
-## Example Schema CSV
+---
 
-| f_name     | f_type           | f_nullable | f_start | f_length | f_values                                 |
-|------------|------------------|------------|---------|----------|------------------------------------------|
-| id         | AutoIncrementType| false      | 1       |          |                                          |
-| firstname  | StringType       | false      |         | 50       |                                          |
-| lastname   | RandomTextType   | false      |         | 100      |                                          |
-| age        | IntegerType      | false      |         |          |                                          |
-| color      | ValueType        | false      |         |          | green \| blue \| yellow \| black \| red \|
+## Project Structure
 
-## Configuration File (config.json)
-
-A JSON5 configuration file can be used to provide default values for data generation. Command-line arguments override config file values.
-
-### Example config.json
-
-```json
-{
-  "default_rows": 1000,
-  "default_null_percentage": 5,
-  "nullable_field_overrides": [],
-  "seed": 12345,
-  "integer_range": [-1000, 1000],
-  "float_range": [-1000.0, 1000.0],
-  "date_range": ["2024-01-01", "2026-12-31"],
-  "timestamp_range": ["2024-01-01T00:00:00", "2026-12-31T23:59:59"]
-}
+```
+.
+├── schema_csv_gen/                 # Main source code directory
+│   ├── config.json                 # Configuration file (auto-loaded by default)
+│   ├── config.py                   # Configuration loader & CLI parser
+│   ├── data_generators.py          # Main data generation engine
+│   ├── schema_parser.py            # Schema parsing (CSV & JSON)
+│   ├── util.py                     # Utility functions for data generation
+│   ├── sample.csv                  # Example schema in CSV format
+│   ├── sample.json                 # Example schema in JSON format
+│   └── *.csv                       # Generated output files
+├── tests/                          # Test suite
+├── README.md                       # This file
+├── requirements.txt                # Python dependencies
+├── pyproject.toml                  # Black formatter & project config
+└── .editorconfig                   # Cross-editor indentation standards
 ```
 
-### config.json Fields
+---
 
-| Field | Type | Description | Example |
-|-------|------|-------------|---------|
-| default_rows | int | Default number of rows to generate | 1000 |
-| default_null_percentage | int | Percentage of null values in optional fields | 5 |
-| nullable_field_overrides | list | Field names that should never be null | `["id", "firstname"]` |
-| seed | int or null | Random seed for reproducible results (null = random) | 12345 |
-| integer_range | [min, max] | Default range for integer fields | `[-1000, 1000]` |
-| float_range | [min, max] | Default range for float fields | `[-1000.0, 1000.0]` |
-| date_range | ["start", "end"] | Default date range (YYYY-MM-DD) | `["2024-01-01", "2026-12-31"]` |
-| timestamp_range | ["start", "end"] | Default timestamp range (ISO format) | `["2024-01-01T00:00:00", "2026-12-31T23:59:59"]` |
-
-## Usage with Config File
-
-```sh
-# Use config file with default values
-python data_generators.py sample.csv output.csv --config config.json
-
-# Override config file values with CLI arguments
-python data_generators.py sample.csv output.csv --config config.json --rows 5000 --seed 999
-```
-
-## Setup Instructions
+## Installation
 
 ### Prerequisites
 
-- Python 3.11 or higher
-- pip (Python package installer)
+- Python 3.9+
+- pip or similar package manager
 
-### Python Virtual Environment Setup
+### Setup
 
-It is recommended to use a Python virtual environment to isolate project dependencies. This prevents conflicts with system-wide Python packages.
+1. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-#### Create a Virtual Environment
+2. **Dependencies include:**
+   - `pyjson5`: For JSON5 config file support
+   - `faker`: For generating realistic random names and data
+   - `black`: For code formatting (dev dependency)
 
-```sh
-# Navigate to the project directory
-cd pyspark-schema-csv-generator
+3. **Format code (optional):**
+   ```bash
+   black .
+   ```
 
-# Create a virtual environment named 'venv'
-python -m venv venv
+---
 
-# Activate the virtual environment
-# On Linux/macOS:
-source venv/bin/activate
+## Usage
 
-# On Windows:
-# venv\Scripts\activate
+### Command Line
+
+```bash
+python3 schema_csv_gen/data_generators.py <schema_file> <output_file> [OPTIONS]
 ```
 
-#### Install Dependencies
+#### Required Arguments
+- `schema_file`: Path to schema definition (.csv or .json)
+- `output_file`: Path to output CSV file
 
-Once the virtual environment is activated, install the project dependencies:
+#### Options
 
-```sh
-# Install from requirements.txt
-pip install -r requirements.txt
+| Option | Short | Type | Description |
+|--------|-------|------|-------------|
+| `--mode` | `-m` | str | Write mode: `overwrite` (o) or `append` (a). Default: `overwrite` |
+| `--rows` | `-r` | int | Number of data rows to generate |
+| `--null_percentage` | `-np` | int | Probability (0-100) that a nullable field will be null |
+| `--seed` | `-s` | int | Random seed for reproducible results |
+| `--integer_range` | `-ir` | int int | Lower and upper bounds for integer fields |
+| `--float_range` | `-fr` | float float | Lower and upper bounds for float fields |
+| `--date_range` | `-dr` | date date | Lower and upper bounds for date fields (YYYY-MM-DD) |
+| `--timestamp_range` | `-tr` | datetime datetime | Lower and upper bounds for timestamp fields |
+| `--config` | | str | Path to custom config file (JSON5 format) |
 
-# Or install dependencies individually
-pip install faker pyjson5
+#### Examples
+
+```bash
+# Generate 50 rows, overwrite existing file
+python3 schema_csv_gen/data_generators.py schema_csv_gen/sample.csv output.csv --rows 50 --mode o
+
+# Generate with seed for reproducibility
+python3 schema_csv_gen/data_generators.py schema_csv_gen/sample.csv output.csv --rows 100 --seed 42
+
+# Generate with custom ranges
+python3 schema_csv_gen/data_generators.py schema_csv_gen/sample.csv output.csv \
+  --rows 20 \
+  --integer_range 100 1000 \
+  --float_range 50.0 500.0
+
+# Append to existing file
+python3 schema_csv_gen/data_generators.py schema_csv_gen/sample.csv output.csv \
+  --rows 10 \
+  --mode append
 ```
 
-#### Deactivate Virtual Environment
+### As a Python Module
 
-When finished working on the project, deactivate the virtual environment:
+```python
+from schema_csv_gen.data_generators import CreateData
 
-```sh
-deactivate
+# Generate data using default config
+data = CreateData()
+data.load()
 ```
 
-### Dependencies
+---
 
-The project requires the following Python packages:
+## Configuration
 
-| Package | Version | Purpose |
-|---------|---------|---------|
-| faker | Latest | Generates realistic random data (names, text, dates, etc.) |
-| pyjson5 | Latest | Parses JSON5 configuration files with flexible syntax |
+### config.json
 
-#### requirements.txt
+The tool automatically loads `config.json` from the current directory if available. Command-line arguments override config file values.
 
-```
-faker
-pyjson5
-```
-
-Create this file in the project root if it doesn't exist, then run `pip install -r requirements.txt`.
-
-### Running the Generator
-
-After setup, you can generate data using:
-
-```sh
-# Generate 10,000 rows using the sample schema
-python src/schema_csv_gen/data_generators.py src/schema_csv_gen/sample.csv output.csv --rows 10000
-
-# Generate with seed for reproducible results
-python src/schema_csv_gen/data_generators.py src/schema_csv_gen/sample.csv output.csv --rows 10000 --seed 12345
-
-# Generate with custom configuration
-python src/schema_csv_gen/data_generators.py src/schema_csv_gen/sample.csv output.csv --config src/schema_csv_gen/config.json --rows 5000
-```
-
-## Sample Schema Files
-
-### sample.csv - CSV Format Schema Definition
-
-The `sample.csv` file is a tab-delimited CSV file that defines the schema for data generation. It demonstrates all 11 supported data types.
-
-**File Location**: `src/schema_csv_gen/sample.csv`
-
-**Structure**: Tab-separated values with headers: `f_name`, `f_type`, `f_nullable`, `f_start`, `f_length`, `f_values`
-
-**Contents**:
-
-| f_name | f_type | f_nullable | f_start | f_length | f_values |
-|--------|--------|------------|---------|----------|----------|
-| id | AutoincrementType | false | 541 | | (auto-incremented starting at 541) |
-| firstname | StringType | false | 1 | 50 | (random names using Faker) |
-| lastname | RandomTextType | false | 1 | 100 | (random text using Faker) |
-| age | IntegerType | false | | | (random integers in default range: 0-10 or config range) |
-| owning | DoubleType | false | | | (random double/float values) |
-| winning | FloatType | false | | | (random float values) |
-| single | BooleanType | false | | | (random true/false) |
-| startDate | DateType | false | | | (random dates in default range: 2024-01-01 to 2026-12-31) |
-| lunchTime | TimestampType | false | | | (random timestamps in default range) |
-| color | ValueType | false | 1 | 100 | green \| blue \| yellow \| black \| cyan \| pink \| white \| red |
-
-**Use Cases**:
-- Simple text-based schema definition
-- Easy to version control (plain text format)
-- Human-readable and editable in any text editor
-- Can be used directly with the data generator as a positional argument
-
-**Example Command**:
-```sh
-python data_generators.py sample.csv output.csv --rows 10000
-```
-
-### sample.json - JSON5 Format Schema Definition
-
-The `sample.json` file defines the same schema as `sample.csv` but in JSON5 format. This provides a more structured, programmatic approach to schema definition.
-
-**File Location**: `src/schema_csv_gen/sample.json`
-
-**Structure**: JSON5 object with "fields" array containing field definition objects
-
-**Schema Object Structure**:
+#### Example config.json
 
 ```json
 {
-  "fields": [
-    {
-      "name": "field_name",
-      "type": "DataType",
-      "nullable": false,
-      "start": 0,
-      "length": 50,
-      "values": ""
-    }
-  ]
+  "default_rows": 20,
+  "default_null_percentage": 80,
+  "seed": null,
+  "integer_range": [10, 1000],
+  "float_range": [10.0, 1000.0],
+  "date_range": ["2024-04-09", "2027-04-09"],
+  "timestamp_range": ["2024-04-09T00:00:00", "2027-04-09T23:59:59"]
 }
 ```
 
-**Field Properties**:
+#### Configuration Fields
 
-| Property | Type | Description | Example |
-|----------|------|-------------|---------|
-| name | string | The field name (column name in output CSV) | "firstname" |
-| type | string | The data type for the field | "stringtype", "integertype", "datetype" |
-| nullable | boolean | Whether the field can contain null values | false |
-| start | integer | Start value for auto-increment or range-based types | 541 (for auto-increment), 1 (for ranges) |
-| length | integer | Maximum length for string/text fields, or field width | 50 (string max length), 100 (value list max length) |
-| values | string | Pipe-separated list of possible values for "valuetype" | "red \| blue \| green" |
+| Field | Type | Description | Default |
+|-------|------|-------------|---------|
+| `default_rows` | int | Number of rows to generate | 10 |
+| `default_null_percentage` | int | Probability (0-100) that a nullable field will be null | 10 |
+| `seed` | int | Random seed (null = random) | null |
+| `integer_range` | [int, int] | Lower and upper bounds for integer fields | [10, 1000] |
+| `float_range` | [float, float] | Lower and upper bounds for float fields | [10.0, 1000.0] |
+| `date_range` | [str, str] | Lower and upper bounds for date fields | today ± 1 year |
+| `timestamp_range` | [str, str] | Lower and upper bounds for timestamp fields | today ± 1 year |
 
-**Complete sample.json Contents**:
+---
+
+## Schema Format
+
+### CSV Schema
+
+**File structure:** `sample.csv`
+
+| Column | Type | Required | Description |
+|--------|------|----------|-------------|
+| f_name | string | Yes | Field name (column name in output CSV) |
+| f_type | string | Yes | Data type (see [Field Types](#field-types)) |
+| f_nullable | boolean | Yes | Can this field be null? (`true` or `false`, case-insensitive) |
+| f_start | int/string | No | Start value for auto-increment, or "na" for other types |
+| f_length | int/string | No | Max length for string fields, or "na" for other types |
+| f_values | string | No | Pipe-separated list of values for `valuetype` fields |
+
+**Example:**
+```csv
+f_name,f_type,f_nullable,f_start,f_length,f_values
+id,Autoincrementtype,false,97531,,
+firstname,stringtype,false,1,50,
+email,stringtype,true,1,80,
+status,valuetype,false,na,na,"active|inactive|pending"
+salary,floattype,false,,,
+address,stringtype,true,1,200,
+```
+
+### JSON Schema
+
+**File structure:** `sample.json`
 
 ```json
 {
@@ -293,7 +239,7 @@ The `sample.json` file defines the same schema as `sample.csv` but in JSON5 form
       "name": "id",
       "type": "Autoincrementtype",
       "nullable": false,
-      "start": 541,
+      "start": 97531,
       "length": 0,
       "values": ""
     },
@@ -306,131 +252,186 @@ The `sample.json` file defines the same schema as `sample.csv` but in JSON5 form
       "values": ""
     },
     {
-      "name": "lastname",
-      "type": "randomtexttype",
-      "nullable": false,
+      "name": "address",
+      "type": "stringtype",
+      "nullable": true,
       "start": 1,
-      "length": 100,
+      "length": 200,
       "values": ""
-    },
-    {
-      "name": "age",
-      "type": "integertype",
-      "nullable": false,
-      "start": 0,
-      "length": 0,
-      "values": ""
-    },
-    {
-      "name": "owning",
-      "type": "doubletype",
-      "nullable": false,
-      "start": 0,
-      "length": 0,
-      "values": ""
-    },
-    {
-      "name": "winning",
-      "type": "floattype",
-      "nullable": false,
-      "start": 0,
-      "length": 0,
-      "values": ""
-    },
-    {
-      "name": "single",
-      "type": "booleantype",
-      "nullable": false,
-      "start": 0,
-      "length": 0,
-      "values": ""
-    },
-    {
-      "name": "startDate",
-      "type": "datetype",
-      "nullable": false,
-      "start": 0,
-      "length": 0,
-      "values": ""
-    },
-    {
-      "name": "lunchTime",
-      "type": "timestamptype",
-      "nullable": false,
-      "start": 0,
-      "length": 0,
-      "values": ""
-    },
-    {
-      "name": "color",
-      "type": "valuetype",
-      "nullable": false,
-      "start": 1,
-      "length": 100,
-      "values": "green | blue | yellow | black | cyan | pink | white | red"
     }
   ]
 }
 ```
 
-**Field Descriptions**:
+---
 
-1. **id** - Auto-incremented integer starting at 541. One row = +1.
-2. **firstname** - Random person's first name (Faker library). Max 50 characters.
-3. **lastname** - Random text (simulating last name). Max 100 characters.
-4. **age** - Random integer in range. Uses config `integer_range` (default: 0-10).
-5. **owning** - Random double (decimal number). Uses config `float_range` (default: -10.0 to 10.0).
-6. **winning** - Random float (decimal number). Uses config `float_range` (default: -10.0 to 10.0).
-7. **single** - Random boolean (true/false). 50% chance each value.
-8. **startDate** - Random date in range. Uses config `date_range` (default: 2024-01-01 to 2026-12-31). Format: YYYY-MM-DD.
-9. **lunchTime** - Random timestamp in range. Uses config `timestamp_range` (default: 2024-01-01T00:00:00 to 2026-12-31T23:59:59). Format: ISO 8601.
-10. **color** - Random value from predefined list. Options: green, blue, yellow, black, cyan, pink, white, red.
+## Field Types
 
-**Use Cases**:
-- Programmatic schema definition (can be generated dynamically)
-- More control over field properties
-- Supports comments and flexible JSON5 syntax
-- Easier integration with configuration management systems
-- Better for complex schema definitions
+All field types are **case-insensitive** in schema definitions.
 
-**Example Command**:
-```sh
-python data_generators.py sample.json output.csv --rows 10000 --seed 12345
+### Basic Types
+
+| Type | Description | Example Output |
+|------|-------------|-----------------|
+| `stringtype` | Random name from Faker library | "Michael Johnson" |
+| `randomtexttype` | Random alphanumeric text | "aB3-cD9+eF=" |
+| `integertype` | Random integer in configured range | 542 |
+| `doubletype` | Random float (5 decimal places) | 234.56789 |
+| `floattype` | Random float (5 decimal places) | 234.56789 |
+| `booleantype` | Random boolean value | "True" or "False" |
+
+### Date & Time Types
+
+| Type | Description | Example Output |
+|------|-------------|-----------------|
+| `datetype` | Random date in configured range | "2025-06-15" |
+| `timestamptype` | Random timestamp in configured range | "2025-06-15 14:32:45.123456" |
+
+### Special Types
+
+| Type | Description | Example Output |
+|------|-------------|-----------------|
+| `uuidtype` | Random UUID (version 1) | "e2f84d2a-a3bc-11ec-8456-001234567890" |
+| `valuetype` | Random value from `f_values` list | "pending" (if f_values="active\|inactive\|pending") |
+| `autoincrementtype` | Sequential integer starting from `f_start` | 97531, 97532, 97533, ... |
+
+---
+
+## Null Value Generation
+
+### How Nulls Work
+
+- **Only fields marked as nullable** (`f_nullable=true`) are eligible for null values.
+- The `default_null_percentage` controls the probability that a nullable field will be set to null (empty string) **in each row**.
+- Nulls are applied **per field, independently**. Each nullable field has its own random chance.
+- **Auto-increment fields are never nullified**, regardless of `f_nullable` setting.
+
+### Example Scenario
+
+**Schema:**
+```csv
+f_name,f_type,f_nullable,f_start,f_length,f_values
+id,Autoincrementtype,true,1,,
+name,stringtype,false,1,50,
+address,stringtype,true,1,100,
+phone,stringtype,true,1,20,
+email,stringtype,false,1,100,
 ```
 
-### Comparing CSV vs JSON Schema Formats
+**Configuration:**
+- `default_null_percentage: 80`
+- 5 fields total: 2 non-nullable, 3 nullable (plus auto-increment that ignores nulls)
 
-| Aspect | CSV (sample.csv) | JSON (sample.json) |
-|--------|------------------|-------------------|
-| **Format** | Tab-separated values | JSON5 objects |
-| **Readability** | Compact, simple | Verbose but structured |
-| **Parsing Speed** | Fast | Slightly slower |
-| **Data Types** | All values are strings | Native JSON types |
-| **Comments** | Not supported | Supported (JSON5) |
-| **Complexity** | Limited functionality | Full property control |
-| **Use Case** | Quick/simple schemas | Production/complex schemas |
+**Result:**
+- `id`: Never null (auto-increment)
+- `name`: Always has value (not nullable)
+- `address`: ~80% null, ~20% has value
+- `phone`: ~80% null, ~20% has value
+- `email`: Always has value (not nullable)
 
-Both formats parse identically by the data generator. Use whichever format fits your workflow.
+**Overall null rate:** ~32% of all cells are null (80% × 3 out of 5 fields)
 
-### Creating Custom Schemas
+### Key Points
 
-You can create your own schema files using either format:
+- To increase overall nulls, mark more fields as nullable in your schema.
+- Typos in `f_nullable` (e.g., `"fase"` instead of `"false"`) are treated as `true` (any non-"false"/"0"/None string is `true`).
+- Use `--seed` to get reproducible null patterns.
 
-**CSV Format**:
+---
+
+## Code Modules
+
+### config.py
+
+Handles configuration loading from `config.json` and command-line argument parsing.
+
+- **`load_config_file(file_path)`**: Loads JSON5 config, auto-detects `config.json`
+- **`load_config()`**: Parses CLI arguments and merges with config file
+
+### schema_parser.py
+
+Parses schema definitions from CSV or JSON files.
+
+- **`Parser.parse_schema(file_path)`**: Auto-detects format and parses
+- **`Parser.parse_schema_csv(file_path)`**: CSV-specific parsing
+- **`Parser.parse_schema_json(file_path)`**: JSON-specific parsing
+- **`Parser.has_duplicate_names(records)`**: Validates unique field names
+
+### data_generators.py
+
+Main data generation engine.
+
+- **`CreateData.__init__()`**: Initialize with config and auto-increment counter
+- **`CreateData.create_file(schema)`**: Orchestrate file generation
+- **`CreateData.create_item(schema)`**: Generate single row as dictionary
+- **`handle_*type()` methods**: Field-specific generators (stringtype, integertype, floattype, etc.)
+
+### util.py
+
+Utility functions for data processing.
+
+- **`Util.make_boolean(value)`**: Robust boolean conversion (handles typos)
+- **`Util.get_random_date(start, end)`**: Generate random datetime in range
+- **`Util.parse_date(date_str)`**: Parse flexible date strings
+
+---
+
+## Examples
+
+### Example 1: Generate 20 Rows with 80% Nulls
+
+```bash
+python3 schema_csv_gen/data_generators.py schema_csv_gen/sample.csv output.csv \
+  --rows 20 \
+  --null_percentage 80
 ```
-f_name	f_type	f_nullable	f_start	f_length	f_values
-user_id	Autoincrementtype	false	1000
-email	stringtype	false	1	100
-status	valuetype	false	1	20	active | inactive | pending
+
+### Example 2: Reproducible Data with Seed
+
+```bash
+python3 schema_csv_gen/data_generators.py schema_csv_gen/sample.csv output1.csv --rows 10 --seed 12345
+python3 schema_csv_gen/data_generators.py schema_csv_gen/sample.csv output2.csv --rows 10 --seed 12345
+# output1.csv and output2.csv will be identical
 ```
 
-**JSON Format**:
-```json
-{
-  "fields": [
-    {"name": "user_id", "type": "Autoincrementtype", "nullable": false, "start": 1000, "length": 0, "values": ""},
-    {"name": "email", "type": "stringtype", "nullable": false, "start": 1, "length": 100, "values": ""},
-    {"name": "status", "type": "valuetype", "nullable": false, "start": 1, "length": 20, "values": "active | inactive | pending"}
-  ]
-}
+### Example 3: Custom Integer and Float Ranges
+
+```bash
+python3 schema_csv_gen/data_generators.py schema_csv_gen/sample.csv output.csv \
+  --rows 50 \
+  --integer_range 1000 9999 \
+  --float_range 100.0 1000.0
 ```
+
+---
+
+## Troubleshooting
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| "No such file or directory: schema.csv" | Schema file path incorrect | Use absolute or relative path from execution directory |
+| Output has fewer nulls than expected | Most fields not marked as nullable | Mark more fields with `f_nullable=true` in schema |
+| TypeError: expected int or None | Config range values are strings | Use numeric values: `[10, 1000]` not `["10", "1000"]` |
+| Duplicate field names | Schema has repeated field names | Ensure each field has unique `f_name` |
+| Data varies each run | Seed not set | Use `--seed` to fix random generation |
+
+---
+
+## Code Quality
+
+- **Formatter:** Black (line length: 120)
+- **Linter:** Ruff (line length: 120)
+- **Python:** 3.9+ type hints and modern syntax
+- **Indentation:** 4 spaces (enforced via .editorconfig)
+
+---
+
+## License
+
+View LICENSE file for details.
+
+---
+
+## Version History
+
+- **v1.0** (April 2026): Initial release with CSV and JSON schema support, null value control, and 11+ field types

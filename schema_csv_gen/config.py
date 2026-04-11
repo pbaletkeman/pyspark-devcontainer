@@ -12,7 +12,6 @@ Functions:
 import argparse
 from datetime import date
 import datetime
-import random
 import pyjson5
 
 
@@ -85,14 +84,13 @@ def load_config() -> dict:
 
     args = parser.parse_args()
     config = load_config_file(args.config)
-    default_null = random.random() * 100
 
     if config:
         config["schema"] = args.schema
         config["output"] = args.output
         config["mode"] = args.mode
         config["default_rows"] = args.rows or config.get("default_rows", 10)
-        config["default_null_percentage"] = args.null_percentage or config.get("default_null_percentage", 80.0)
+        config["default_null_percentage"] = args.null_percentage or config.get("default_null_percentage", 10.0)
         config["seed"] = args.seed or config.get("seed")
         config["integer_range"] = args.integer_range or config.get("integer_range", [0, 10])
         config["float_range"] = args.float_range or config.get("float_range", [0.0, 10.0])
@@ -104,7 +102,7 @@ def load_config() -> dict:
             "mode": args.mode,
             "schema": args.schema,
             "default_rows": args.rows or 10,
-            "default_null_percentage": args.null_percentage or 80.0,
+            "default_null_percentage": args.null_percentage or 10.0,
             "seed": args.seed,
             "integer_range": args.integer_range or [10, 1000],
             "float_range": args.float_range or [10.0, 1000.0],

@@ -1,6 +1,6 @@
 f_name,f_type,f_nullable,f_start,f_length,f_values
 brf_brf_id,Autoincrementtype,True,97531,
-brk_fi_id, randomtexttype,false,1,15
+brk_fi_id, Autoincrementtype,false,1,15
 brf_indirect_connector_id, valuetype, false, na, na, "CA000001|CA000004|CA000002|CA000003"
 brt_payment_req_ref_num, randomtexttype,false,1,15
 brt_processing_status, valuetype, false, na, na, "0|1|2|4"

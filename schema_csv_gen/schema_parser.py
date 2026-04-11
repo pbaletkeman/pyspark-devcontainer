@@ -43,9 +43,6 @@ class Parser:
         else:
             retval = cls.parse_schema_csv(file_path)
 
-        if cls.has_duplicate_auto(retval):
-            raise Exception("duplicate field auto increment")
-
         if cls.has_duplicate_names(retval):
             raise Exception("duplicate field in schema")
 
@@ -96,27 +93,6 @@ class Parser:
                 }
                 items.append(item)
             return items
-
-    @classmethod
-    def has_duplicate_auto(cls, records: list) -> bool:
-        """
-        Check for duplicate auto-increment fields in schema.
-
-        Only one field can have type 'autoincrementtype'.
-
-        Args:
-            records (list): List of field definition dictionaries.
-
-        Returns:
-            bool: True if duplicate auto-increment found, False otherwise.
-        """
-        auto_found = False
-        for record in records:
-            if record.get("type", "").lower() == "autoincrementtype":
-                if auto_found:
-                    return True
-                auto_found = True
-        return False
 
     @classmethod
     def has_duplicate_names(cls, records: list) -> bool:
