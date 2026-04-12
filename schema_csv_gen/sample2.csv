@@ -1,0 +1,28 @@
+f_name,f_type,f_nullable,f_start,f_length,f_values
+payer_id, valuetype, false, na, na, "CAbzPvP34Wz4|CAS7TUBXzyf6|CAPgcd4qDpT7|CAbP34QWS12|CAPgcdBXzyf6|CAPgcdBgcd4"
+brf_brf_id, valuetype, false, na, na, "118000|119000|116000|115000|114000|113000|112000|111000|119000|110000"
+brk_fi_id, valuetype, false, na, na, "CA000001|CA000002|CA000003|CA000004|CA000005|CA000006|CA000007|CA000008"
+brf_indirect_connector_id, valuetype, true, na, na, "000001002|000005005|000009009|000007007|000008008"
+brt_payment_req_ref_num,randomtexttype,false,1,12
+brt_processing_status, valuetype, false, na, na, "PROCESSED|PROCESSED"
+brt_participant_req_ref,randomtexttype,false,1,36
+brt_participant_endtoend_id,randomtexttype,false,1,36
+brt_account_number, valuetype, true, na, na, "222-22222-55555555|111-11111-44444444|333-11111-22222222|555-11111-66666666|999-11111-22222222"
+brt_requested_amount, floattype,false
+brt_ccf_endpoint_version, valuetype, true, na, na, "v2.1|v2.2|v3.1|v3.4"
+brt_fi_id, valuetype, false, na, na, "CA000001|CA000002|CA000003|CA000004|CA000005|CA000006|CA000007|CA000008"
+brt_org_message_id, valuetype, false, na, na, "ObQ50oa63VLOp0lMVC31tGM2sgh6JxDqYuK|OMpFVOPlytNdbaAI8ve8LV1XHO5ZwGpI4Ki|kGWrnvE3jnzxGsLLTPIo7G6qkxMjC1ZjpPF|7QhZN5U1mMNNZxnEYL5vhz6izjACAaZYU16|0gpeRvn6lgq6RhRuu6Lv6Hoam2LtPM7tUey|A9tnRi4G3ZRxBl1ydE8HwCF5pdpCcikmlbr|9jfD4MXfiLfcYcDzjb4aKYvXCUq6wdRnjcV|FQeIp1q2Zczqf6QMA1tIXmQzzkmEKbKXV3s"
+payer_primary_name, valuetype, false, na, na, "BULK_TEST_2|BULK_REG_12|BULK_REG_10|BEST_REG_1|BULK_TEST_AA|BULK_TEST_R99|BULK_TEST_102|BULK_TEST_REG_205"
+payer_address1, stringtype,false,1,30
+payer_address2, stringtype,false,1,30
+payer_city, stringtype,false,1,30
+payer_postal_code, valuetype, true, na, na, "A1A1A1|W2W2W2|9R9R9R|5T5T5"
+payer_province_code, valuetype, true, na, na, "ON|AB|QB|SK"
+payer_country_iso_code, valuetype, true, na, na, "CA|CA"
+payer_fi_userid, valuetype, false, na, na, "BULK_TEST_A|BULK_REG_1B|BULK_REG_1C|BEST_REG_D|BULK_TEST_EE|BULK_TEST_RFF|BULK_TEST_G02|BULK_TEST_REG_H05"
+brt_cancel_participant_req_ref, valuetype, true, na, na, "-|-"
+brf_cancel_org_message_id, valuetype, true, na, na, "-|-"
+brf_cancel_fi_creation_date, valuetype, true, na, na, "-|-"
+pr_date_updated,timestamptype, false
+pr_payment_req_status, valuetype, true, na, na, "1|2|3|4|5"
+prhd_payment_req_status, valuetype, true, na, na, "1|2|2|4|5"
